@@ -1,3 +1,12 @@
+# HLLX
+
+The code is based on the MLAU code developed by Takashi Minoshima. The development is intended to test some other approximate Riemann solutions of the HLL-type.
+
+---
+*The original README from [Minoshima et al.](https://github.com/minoshim/MLAU) follows below*
+
+---
+
 # MLAU/LHLLD
 This C++ package is aimed to numerically solve compressible magnetohydrodynamic (MHD) equations with the low-dissipation quasi all-speed Riemann solvers:
 - MLAU - A Multistate Low-dissipation Advection Upstream Splitting Method for Ideal Magnetohydrodynamics[^1];
