@@ -23,6 +23,218 @@
 
 #define EPS (1e-8)
 
+inline void calc_flux_hlldpc(double rhoL, double uL, double vL, double wL, double ByL, double BzL, double pL,
+			   double rhoR, double uR, double vR, double wR, double ByR, double BzR, double pR,
+			   double Bn, double gamma, double *dv,
+			   double *fro, double *fmn, double *fmt, double *fmu, double *fbt, double *fbu, double *fen)
+{  
+  double gamma_1 = gamma - 1.0;
+  double Bn2 = Bn * Bn;
+  
+  double BL2 = Bn2 + ByL * ByL + BzL * BzL;
+  double BR2 = Bn2 + ByR * ByR + BzR * BzR;
+  double pmL = 0.5 * BL2;
+  double pmR = 0.5 * BR2;
+  double PL = pL + pmL;
+  double PR = pR + pmR;
+  double EeL = pL / gamma_1;
+  double EeR = pR / gamma_1;
+  double EvL = 0.5 * rhoL * (uL * uL + vL * vL + wL * wL);
+  double EvR = 0.5 * rhoR * (uR * uR + vR * vR + wR * wR);
+  double EbL = 0.5 * BL2;
+  double EbR = 0.5 * BR2;
+  double EL = EeL + EvL + EbL;
+  double ER = EeR + EvR + EbR;
+ 
+  double rhoVnL = uL * rhoL;  
+  double rhoVnR = uR * rhoR; 
+ 
+  double  leftMassFlux = rhoVnL; 
+  double rightMassFlux = rhoVnR; 
+  double  leftEulerFluxX = rhoVnL * uL + PL - Bn * Bn ;
+  double  leftEulerFluxY = rhoVnL * vL      - Bn * ByL;
+  double  leftEulerFluxZ = rhoVnL * wL      - Bn * BzL;
+  double rightEulerFluxX = rhoVnR * uR + PR - Bn * Bn ;
+  double rightEulerFluxY = rhoVnR * vR      - Bn * ByR;
+  double rightEulerFluxZ = rhoVnR * wR      - Bn * BzR;
+  double  leftMFluxY = uL * ByL - Bn * vL;
+  double  leftMFluxZ = uL * BzL - Bn * wL;
+  double rightMFluxY = uR * ByR - Bn * vR;
+  double rightMFluxZ = uR * BzR - Bn * wR;
+  double  leftEFlux = uL * (EL + PL) - Bn * (uL * Bn + vL * ByL + wL * BzL);
+  double rightEFlux = uR * (ER + PR) - Bn * (uR * Bn + vR * ByR + wR * BzR); 
+
+  double cl2=gamma*pL/rhoL; // The square of the left sound speed
+  double cr2=gamma*pR/rhoR;  
+  double cal2=Bn2/rhoL; // The square of the left Alfven speed
+  double car2=Bn2/rhoR;
+  double cbl2=cl2+cal2+2.0*pmL/rhoL;
+  double cbr2=cr2+car2+2.0*pmR/rhoR;
+  double cfl2=0.5*(cbl2+sqrt(fabs(cbl2*cbl2-4.0*cl2*cal2))); // The squre of the left fast wave speed
+  double cfr2=0.5*(cbr2+sqrt(fabs(cbr2*cbr2-4.0*cr2*car2)));
+  double cfl=sqrt(cfl2);
+  double cfr=sqrt(cfr2); 
+  double SL=min(uL-cfl,uR+cfr);
+  double SR=max(uL+cfl,uR-cfr); // From the definition of roli to here, the code is the same as in the hlld flux
+
+  if(SL > 0.0){
+    *fro = leftMassFlux;
+    *fmn = leftEulerFluxX;
+    *fmt = leftEulerFluxY;
+    *fmu = leftEulerFluxZ;
+    *fbt = leftMFluxY;
+    *fbu = leftMFluxZ;
+    *fen = leftEFlux;
+  }
+  else if (SR < 0.0){
+    *fro = rightMassFlux;
+    *fmn = rightEulerFluxX;
+    *fmt = rightEulerFluxY;
+    *fmu = rightEulerFluxZ;
+    *fbt = rightMFluxY;
+    *fbu = rightMFluxZ;
+    *fen = rightEFlux;
+  }
+  else {
+    double SR_SL  = SR - SL;
+    double  SRSL  = SR * SL;
+    double SL_VnL = SL - uL;
+    double SR_VnR = SR - uR;
+ 
+    double SM = (PR - PL + rhoVnL * SL_VnL - rhoVnR * SR_VnR) / (rhoL * SL_VnL - rhoR * SR_VnR);
+    double SL_SM = SL - SM;
+    double rhoLM = rhoL * SL_VnL / SL_SM;
+    double SR_SM = SR - SM;
+    double rhoRM = rhoR * SR_VnR / SR_SM;
+
+    double sqRhoLM = sqrt(rhoLM);
+    double sqRhoRM = sqrt(rhoRM);
+    double absBnM = fabs(Bn);
+    double signBnM = Bn > 0.0 ? 1.0 : -1.0;
+
+    double SLS = SM - absBnM/sqRhoLM;
+    double SRS = SM + absBnM/sqRhoRM;
+
+    double rhoVxLM = 0.0;
+    double rhoVyLM = 0.0;
+    double rhoVzLM = 0.0;
+    double rhoVxRM = 0.0;
+    double rhoVyRM = 0.0;
+    double rhoVzRM = 0.0;
+    double uLM = 0.0;
+    double vLM = 0.0;
+    double wLM = 0.0;
+    double uRM = 0.0;
+    double vRM = 0.0;
+    double wRM = 0.0;
+    double ELM = 0.0;
+    double ERM = 0.0;
+    double ByLM = 0.0;
+    double BzLM = 0.0;
+    double ByRM = 0.0;
+    double BzRM = 0.0;
+    double EeLM = 0.0;
+    double EeRM = 0.0;
+    double EfLM = 0.0;
+    double EfRM = 0.0;
+    const double BxM = Bn;
+
+    if(SLS >= 0.0 || (SLS < 0.0 && 0.0 <= SM) || (SM < 0.0 && 0.0 <= SRS)){
+      const double coefL1 = SL_VnL - Bn * Bn / (rhoL * SL_VnL);
+      const double coefL3 = SL_SM - Bn * Bn / (rhoL * SL_VnL);
+      ByLM = ByL * coefL1 / (coefL3+EPS);
+      BzLM = BzL * coefL1 / (coefL3+EPS);
+      rhoVxLM = rhoLM * SM;
+      rhoVyLM = (rhoL * vL * SL_VnL - Bn * ByLM + Bn * ByL) / SL_SM;
+      rhoVzLM = (rhoL * wL * SL_VnL - Bn * BzLM + Bn * BzL) / SL_SM;
+
+      uLM = SM;
+      vLM = rhoVyLM / rhoLM;
+      wLM = rhoVzLM / rhoLM;
+      ELM = 0.5 * (rhoLM * (uLM * uLM + vLM * vLM + wLM * wLM) + BxM * BxM + ByLM * ByLM + BzLM * BzLM);
+      EeLM = EeL * (SL - uL * gamma) / (SL - SM * gamma);
+    }
+    if((SLS < 0.0 && 0.0 <= SM) || (SM < 0.0 && 0.0 <= SRS) || SRS < 0.0){
+      const double coefR1 = SR_VnR - Bn * Bn / (rhoR * SR_VnR);
+      const double coefR3 = SR_SM - Bn * Bn / (rhoR * SR_VnR);
+      ByRM = ByR * coefR1 / (coefR3+EPS);
+      BzRM = BzR * coefR1 / (coefR3+EPS);
+      rhoVxRM = rhoRM * SM;
+      rhoVyRM = (rhoR * vR * SR_VnR - Bn * ByRM + Bn * ByR) / SR_SM;
+      rhoVzRM = (rhoR * wR * SR_VnR - Bn * BzRM + Bn * BzR) / SR_SM;
+
+      uRM = SM;
+      vRM = rhoVyRM / rhoRM;
+      wRM = rhoVzRM / rhoRM;
+      ERM = 0.5 * (rhoRM * (uRM * uRM + vRM * vRM + wRM * wRM) + BxM * BxM + ByRM * ByRM + BzRM * BzRM);
+      EeRM = EeR * (SR - uR * gamma) / (SR - SM * gamma);
+    }
+    double rhoULM = 0.0;
+    double rhoVLM = 0.0;
+    double rhoWLM = 0.0;
+    double rhoURM = 0.0;
+    double rhoVRM = 0.0;
+    double rhoWRM = 0.0;
+
+    if(SLS >= 0.0 || (SLS < 0.0 && 0.0 <= SM)){
+      rhoULM = rhoVxLM;
+      rhoVLM = rhoVyLM;
+      rhoWLM = rhoVzLM;
+
+      *fro = leftMassFlux   + SL * ( rhoLM - rhoL);
+      *fmn = leftEulerFluxX + SL * (rhoULM - rhoL * uL);
+      *fmt = leftEulerFluxY + SL * (rhoVLM - rhoL * vL);
+      *fmu = leftEulerFluxZ + SL * (rhoWLM - rhoL * wL);
+      *fbt = leftMFluxY     + SL * ( ByLM  -       ByL);
+      *fbu = leftMFluxZ     + SL * ( BzLM  -       BzL);
+      *fen = leftEFlux      + SL * (EeLM + ELM - EL);
+    }
+    else if((SM < 0.0 && 0.0 <= SRS) || SRS < 0.0){
+      rhoURM = rhoVxRM;
+      rhoVRM = rhoVyRM;
+      rhoWRM = rhoVzRM;
+
+      *fro = rightMassFlux   + SR * ( rhoRM - rhoR);
+      *fmn = rightEulerFluxX + SR * (rhoURM - rhoR * uR);
+      *fmt = rightEulerFluxY + SR * (rhoVRM - rhoR * vR);
+      *fmu = rightEulerFluxZ + SR * (rhoWRM - rhoR * wR);
+      *fbt = rightMFluxY     + SR * ( ByRM  -       ByR);
+      *fbu = rightMFluxZ     + SR * ( BzRM  -       BzR);
+      *fen = rightEFlux      + SR * (EeRM + ERM - ER);
+    }
+    if((SLS < 0.0 && SM >= 0.0) || (SM < 0.0 && SRS >= 0.0)){
+      const double sqRhoLMPlusRM = sqRhoLM + sqRhoRM;
+      const double sqRhoM2 = sqRhoLM * sqRhoRM;
+      const double ByM = (ByRM * sqRhoLM + ByLM * sqRhoRM + sqRhoM2 * (vRM - vLM) * signBnM) / sqRhoLMPlusRM;
+      const double BzM = (BzRM * sqRhoLM + BzLM * sqRhoRM + sqRhoM2 * (wRM - wLM) * signBnM) / sqRhoLMPlusRM;
+
+      const double uM = SM;
+      const double vM = (vRM * sqRhoRM + vLM * sqRhoLM + (ByRM - ByLM) * signBnM) / sqRhoLMPlusRM;
+      const double wM = (wRM * sqRhoRM + wLM * sqRhoLM + (BzRM - BzLM) * signBnM) / sqRhoLMPlusRM;
+
+      const double EeM = ((SM * gamma_1 + absBnM/sqRhoRM) * EeRM + (SM * gamma_1 + absBnM/sqRhoLM) * EeLM) / (absBnM/sqRhoLM + absBnM/sqRhoRM); 
+      if(SM >= 0.0){
+        *fmn = *fmn + SLS * (uM * rhoLM - rhoULM);
+        *fmt = *fmt + SLS * (vM * rhoLM - rhoVLM);
+        *fmu = *fmu + SLS * (wM * rhoLM - rhoWLM);
+        *fbt = *fbt + SLS * (       ByM -   ByLM);
+        *fbu = *fbu + SLS * (       BzM -   BzLM);
+        const double ELS = 0.5 * (rhoLM * (uM * uM + vM * vM + wM * wM) + BxM * BxM + ByM * ByM + BzM * BzM);
+        *fen = *fen + SLS * (       ELS -    ELM + EeM  - EeLM);
+      }
+      else{
+        *fmn = *fmn + SRS * (uM * rhoRM - rhoURM);
+        *fmt = *fmt + SRS * (vM * rhoRM - rhoVRM);
+        *fmu = *fmu + SRS * (wM * rhoRM - rhoWRM);
+        *fbt = *fbt + SRS * (       ByM -   ByRM);
+        *fbu = *fbu + SRS * (       BzM -   BzRM);
+        const double ERS = 0.5 * (rhoRM * (uM * uM + vM * vM + wM * wM) + BxM * BxM + ByM * ByM + BzM * BzM);
+        *fen = *fen + SRS * (       ERS -    ERM + EeM - EeRM);
+      }
+    }  
+  }
+}
+
 inline void calc_flux_mlau(double rol, double vnl, double vtl, double vul, double btl, double bul, double prl,
 			   double ror, double vnr, double vtr, double vur, double btr, double bur, double prr,
 			   double bnc, double gamma, double *dv,
