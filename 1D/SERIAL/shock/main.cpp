@@ -13,6 +13,7 @@
 // NUM = 3: Slow switch-off shock (Miyoshi & Kusano 2005, Fig. 9)
 // NUM = 4: Slow switch-off rarefaction (Miyoshi & Kusano 2005, Fig. 10)
 // NUM = 5: Super-fast expansion (Miyoshi & Kusano 2005, Fig. 11)
+// NUM = 6: Dai & Woodward with strong field (Minoshima, Kitamura, and Miyoshi 2020, Fig. 4)
 
 int main(void)
 {
@@ -33,7 +34,10 @@ int main(void)
   double x[nx],ro[nx],mx[nx],my[nx],mz[nx],en[nx],by[nx],bz[nx];
 
   // Set normal magnetic field
-#if (NUM == 2)
+#if (NUM == 1)
+  // DaiWoodward
+  bx=2.0/sqrt(4*pi);
+#elif (NUM == 2)
   // BrioWu
   bx=0.75;
   gamma=2.0;
@@ -47,8 +51,8 @@ int main(void)
   // Super-fast expansion
   bx=0.0;
 #else  // Default
-  // DaiWoodward
-  bx=2.0/sqrt(4*pi);
+  // DaiWoodward strong field
+  bx=200.0/sqrt(4*pi);
 #endif
 
   /* Initialize */
