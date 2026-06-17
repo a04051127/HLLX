@@ -1,19 +1,27 @@
 /* Copyright 2020 Takashi Minoshima */
+/* Copyright 2026 Fan Zhang */
 
-/* This file is part of MLAU. */
+/* This file is part of HLLX, forked from MLAU. */
 
-/* MLAU is free software: you can redistribute it and/or modify */
+/* HLLX is free software: you can redistribute it and/or modify */
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation, either version 3 of the License, or */
 /* (at your option) any later version. */
 
-/* MLAU is distributed in the hope that it will be useful, */
+/* HLLX is distributed in the hope that it will be useful, */
 /* but WITHOUT ANY WARRANTY; without even the implied warranty of */
 /* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the */
 /* GNU General Public License for more details. */
 
 /* You should have received a copy of the GNU General Public License */
-/* along with MLAU.  If not, see <https://www.gnu.org/licenses/>. */
+/* along with HLLX.  If not, see <https://www.gnu.org/licenses/>. */
+
+/* ------------------------------------------------------------------ */
+/* Added by Fan Zhang, 2026: calc_flux_hlldpc */
+/* The function is a realization based on the HLLD-ec scheme introduced in */
+/* Zhang et al. JCP, 2026. https://doi.org/10.1016/j.jcp.2026.114724   */
+/* The code is written to be closer to the notations and logic in the paper. */
+/* ------------------------------------------------------------------ */
 
 #ifndef _MHD_FLUX_H_
 #define _MHD_FLUX_H_
