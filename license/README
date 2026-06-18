@@ -1,5 +1,9 @@
 HLLD-ec -- An (intermediate) energy-consistent HLLD method for ideal MHD
+
 Copyright 2026 Fan ZHANG
+
+DOI: https://doi.org/10.1016/j.jcp.2026.114724
+      
 
 MLAU - A Multistate Low-dissipation Advection Upstream Splitting Method for Ideal Magnetohydrodynamics
 LHLLD- A low-dissipation HLLD approximate Riemann solver for a very wide range of Mach numbers
