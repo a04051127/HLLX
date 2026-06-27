@@ -17,7 +17,7 @@
 /* along with HLLX.  If not, see <https://www.gnu.org/licenses/>. */
 
 /* ------------------------------------------------------------------ */
-/* Added by Fan Zhang, 2026: calc_flux_hlldpc */
+/* Added by Fan Zhang, 2026: calc_flux_hlldec */
 /* The function is a realization based on the HLLD-ec scheme introduced in */
 /* Zhang et al. JCP, 2026. https://doi.org/10.1016/j.jcp.2026.114724   */
 /* The code is written to be closer to the notations and logic in the paper. */
@@ -31,7 +31,7 @@
 
 #define EPS (1e-8)
 
-inline void calc_flux_hlldpc(double rhoL, double uL, double vL, double wL, double ByL, double BzL, double pL,
+inline void calc_flux_hlldec(double rhoL, double uL, double vL, double wL, double ByL, double BzL, double pL,
 			   double rhoR, double uR, double vR, double wR, double ByR, double BzR, double pR,
 			   double Bn, double gamma, double *dv,
 			   double *fro, double *fmn, double *fmt, double *fmu, double *fbt, double *fbu, double *fen)
