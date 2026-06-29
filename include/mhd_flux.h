@@ -220,7 +220,7 @@ inline void calc_flux_hlldec(double rhoL, double uL, double vL, double wL, doubl
       const double vM = (vRM * sqRhoRM + vLM * sqRhoLM + (ByRM - ByLM) * signBnM) / sqRhoLMPlusRM;
       const double wM = (wRM * sqRhoRM + wLM * sqRhoLM + (BzRM - BzLM) * signBnM) / sqRhoLMPlusRM;
 
-      const double EeM = ((SM * gamma_1 + absBnM/sqRhoRM) * EeRM + (SM * gamma_1 + absBnM/sqRhoLM) * EeLM) / (absBnM/sqRhoLM + absBnM/sqRhoRM); 
+      const double EeM = ((-SM * gamma_1 + absBnM/sqRhoRM) * EeRM + (SM * gamma_1 + absBnM/sqRhoLM) * EeLM) / (absBnM/sqRhoLM + absBnM/sqRhoRM); 
       if(SM >= 0.0){
         *fmn = *fmn + SLS * (uM * rhoLM - rhoULM);
         *fmt = *fmt + SLS * (vM * rhoLM - rhoVLM);
