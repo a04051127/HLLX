@@ -82,8 +82,8 @@ inline void calc_flux_hlldec(double rhoL, double uL, double vL, double wL, doubl
   double cfr2=0.5*(cbr2+sqrt(fabs(cbr2*cbr2-4.0*cr2*car2)));
   double cfl=sqrt(cfl2);
   double cfr=sqrt(cfr2); 
-  double SL=min(uL-cfl,uR+cfl);
-  double SR=max(uL+cfl,uR-cfr); // From the definition of roli to here, the code is the same as in the hlld flux
+  double SL=min(uL-cfl,uR-cfr);
+  double SR=max(uL+cfl,uR+cfr); // From the definition of roli to here, the code is the same as in the hlld flux
 
   if(SL > 0.0){
     *fro = leftMassFlux;
