@@ -35,7 +35,7 @@ int main(void)
 #endif
   
     for (int ss=0;ss<nx*ny;ss++){
-      if (finite(ro[ss]) != 1){
+      if (isfinite(ro[ss]) != 1){
 	puts("Calculation halted");
 	new_delete();
 	return 0;

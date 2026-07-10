@@ -24,7 +24,7 @@ void cflcheck(double dr, double *dt, int comment)
     }
   }
 
-  if (finite(vmax)) (*dt)=cfl*dr/vmax;
+  if (isfinite(vmax)) (*dt)=cfl*dr/vmax;
   if (comment){
     printf("vmax = %f, dt = %.9f, dx = %f\n",vmax,(*dt),dr);
     printf("CFL number = %f\n",vmax*(*dt)/dr);
