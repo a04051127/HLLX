@@ -2,8 +2,8 @@ HLLD-ec -- An (intermediate) energy-consistent HLLD method for ideal MHD
 
 Copyright 2026 Fan ZHANG
 
-DOI: https://doi.org/10.1016/j.jcp.2026.114724
-      
+DOI of the original paper (golden open access): https://doi.org/10.1016/j.jcp.2026.114724   
+arXiv site of the improved estimate of the intermediate internal energy: https://arxiv.org/abs/2607.10293
 
 MLAU - A Multistate Low-dissipation Advection Upstream Splitting Method for Ideal Magnetohydrodynamics
 LHLLD- A low-dissipation HLLD approximate Riemann solver for a very wide range of Mach numbers
@@ -13,8 +13,8 @@ Copyright 2020,2021 Takashi Minoshima
 Github site:  https://github.com/minoshim/MLAU
 
 Journal sites:
-	https://iopscience.iop.org/article/10.3847/1538-4365/ab8aee (MLAU)
-	https://www.sciencedirect.com/science/article/pii/S0021999121005349 (LHLLD)
+	https://iopscience.iop.org/article/10.3847/1538-4365/ab8aee (MLAU)   
+	https://www.sciencedirect.com/science/article/pii/S0021999121005349 (LHLLD)   
 arXiv sites:
       http://arxiv.org/abs/2004.08012 (MLAU)
       https://arxiv.org/abs/2108.04991 (LHLLD)
