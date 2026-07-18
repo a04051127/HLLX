@@ -2,7 +2,7 @@ HLLD-ec -- An (intermediate) energy-consistent HLLD method for ideal MHD
 
 Copyright 2026 Fan ZHANG
 
-DOI of the original paper (golden open access): https://doi.org/10.1016/j.jcp.2026.114724   
+DOI of the original paper (open access): https://doi.org/10.1016/j.jcp.2026.114724   
 arXiv site of the improved estimate of the intermediate internal energy: https://arxiv.org/abs/2607.10293
 
 MLAU - A Multistate Low-dissipation Advection Upstream Splitting Method for Ideal Magnetohydrodynamics
