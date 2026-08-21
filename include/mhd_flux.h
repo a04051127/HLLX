@@ -220,7 +220,8 @@ inline void calc_flux_hlldec(double rhoL, double uL, double vL, double wL, doubl
       const double vM = (vRM * sqRhoRM + vLM * sqRhoLM + (ByRM - ByLM) * signBnM) / sqRhoLMPlusRM;
       const double wM = (wRM * sqRhoRM + wLM * sqRhoLM + (BzRM - BzLM) * signBnM) / sqRhoLMPlusRM;
 
-      const double EeM = ((-SM * gamma_1 + absBnM/sqRhoRM) * EeRM + (SM * gamma_1 + absBnM/sqRhoLM) * EeLM) / (absBnM/sqRhoLM + absBnM/sqRhoRM); 
+      const double EeM = ((-SM * gamma_1 + absBnM/sqRhoRM) * EeRM + (SM * gamma_1 + absBnM/sqRhoLM) * EeLM) / (absBnM/sqRhoLM*rhoLM + absBnM/sqRhoRM*rhoRM); 
+      
       if(SM >= 0.0){
         *fmn = *fmn + SLS * (uM * rhoLM - rhoULM);
         *fmt = *fmt + SLS * (vM * rhoLM - rhoVLM);
@@ -228,7 +229,7 @@ inline void calc_flux_hlldec(double rhoL, double uL, double vL, double wL, doubl
         *fbt = *fbt + SLS * (       ByM -   ByLM);
         *fbu = *fbu + SLS * (       BzM -   BzLM);
         const double ELS = 0.5 * (rhoLM * (uM * uM + vM * vM + wM * wM) + BxM * BxM + ByM * ByM + BzM * BzM);
-        *fen = *fen + SLS * (       ELS -    ELM + EeM  - EeLM);
+        *fen = *fen + SLS * (       ELS -    ELM + EeM * rhoLM  - EeLM);
       }
       else{
         *fmn = *fmn + SRS * (uM * rhoRM - rhoURM);
@@ -236,8 +237,8 @@ inline void calc_flux_hlldec(double rhoL, double uL, double vL, double wL, doubl
         *fmu = *fmu + SRS * (wM * rhoRM - rhoWRM);
         *fbt = *fbt + SRS * (       ByM -   ByRM);
         *fbu = *fbu + SRS * (       BzM -   BzRM);
-        const double ERS = 0.5 * (rhoRM * (uM * uM + vM * vM + wM * wM) + BxM * BxM + ByM * ByM + BzM * BzM);
-        *fen = *fen + SRS * (       ERS -    ERM + EeM - EeRM);
+        const double ERS = 0.5 * (rhoRM * (uM * uM + vM * vM + wM * wM) + BxM * BxM + ByM * ByM + BzM * BzM); 
+        *fen = *fen + SRS * (       ERS -    ERM + EeM * rhoRM - EeRM);
       }
     }  
   }
